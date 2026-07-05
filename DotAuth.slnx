@@ -1,1 +1,8 @@
-<Solution />
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="DotAuth.Application/DotAuth.Application.csproj" />
+    <Project Path="DotAuth.Domain/DotAuth.Domain.csproj" />
+    <Project Path="DotAuth.Infrastructure/DotAuth.Infrastructure.csproj" />
+    <Project Path="DotAuth.Presentation/DotAuth.Presentation.csproj" />
+  </Folder>
+</Solution>
