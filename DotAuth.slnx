@@ -4,5 +4,6 @@
     <Project Path="DotAuth.Domain/DotAuth.Domain.csproj" />
     <Project Path="DotAuth.Infrastructure/DotAuth.Infrastructure.csproj" />
     <Project Path="DotAuth.Presentation/DotAuth.Presentation.csproj" />
+    <Project Path="SampleAPI/SampleAPI.csproj" Id="5a943a1b-9e8f-4fbd-81bb-2008eaec481f" />
   </Folder>
 </Solution>
