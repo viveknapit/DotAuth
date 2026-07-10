@@ -44,5 +44,23 @@ namespace DotAuth.Infrastructure.Persistence.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<DotAuthUser?> FindByEmailAsync(string email)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == email);
+        }
+        
+        public async Task<DotAuthUser?> FindByPhoneAsync(string phoneNumber)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+        }
+
+        public async Task<DotAuthUser?> FindByUsernameAsync(string username)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Username == username);
+        }
     }
 }

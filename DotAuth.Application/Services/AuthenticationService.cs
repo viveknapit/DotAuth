@@ -11,7 +11,7 @@ namespace DotAuth.Application.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
 
-        public AuthenticationService(IUserRepository userRepository,IPasswordHasher passwordHasher,IJwtProvider jwtProvider)
+        public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
@@ -68,6 +68,48 @@ namespace DotAuth.Application.Services
 
             // Return response
             return new RegisterResponse
+            {
+                UserId = user.Id,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        {
+            DotAuthUser? user = null;
+            if (!string.IsNullOrEmpty(request.Login))
+            {
+                if (request.Login.Contains('@'))
+                {
+                    user = await _userRepository.FindByEmailAsync(request.Login);
+
+                }
+                else if (request.Login.All(char.IsDigit))
+                {
+                    user = await _userRepository.FindByPhoneAsync(request.Login);
+                }
+                else
+                {
+                    user = await _userRepository.FindByUsernameAsync(request.Login);
+                }
+
+                if (user == null)
+                {
+                    throw new Exception("Invalid credentials.");
+                }
+
+                if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
+                {
+                    throw new Exception("Invalid credentials.");
+                }
+            }
+
+            // Generate tokens
+            var accessToken = _jwtProvider.GenerateAccessToken(user);
+            var refreshToken = _jwtProvider.GenerateRefreshToken();
+            // Return response
+            return new LoginResponse
             {
                 UserId = user.Id,
                 AccessToken = accessToken,

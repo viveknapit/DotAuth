@@ -25,8 +25,17 @@ namespace DotAuth.Presentation.EndPoints
                 })
                 .WithName("Register")
                 .WithTags("Authentication");
+            
+            app.MapPost("/auth/login", async ( LoginRequest request, IAuthenticationService authenticationService) =>
+                {
+                    var response = await authenticationService.LoginAsync(request);
+                    return Results.Ok(response);
+                })
+                .WithName("Login")
+                .WithTags("Authentication");
 
             return app;
         }
+
     }
 }

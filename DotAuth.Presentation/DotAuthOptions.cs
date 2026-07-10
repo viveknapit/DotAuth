@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DotAuth.Domain.Enums;
+using DotAuth.Presentation.Options;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using DotAuth.Domain.Enums;
 
 namespace DotAuth.Presentation
 {
@@ -9,6 +10,7 @@ namespace DotAuth.Presentation
     {
         public string ConnectionString { get; set; } = string.Empty;
         public DatabaseProvider Provider { get; set; }
+        public JwtOptions Jwt { get; } = new();
 
         public void UsePostgreSql(string connectionString)
         {

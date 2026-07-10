@@ -15,6 +15,12 @@ namespace DotAuth.Application.Interfaces
 
         Task AddAsync(DotAuthUser user);
 
+        Task<DotAuthUser?> FindByEmailAsync(string email);
+
+        Task<DotAuthUser?> FindByPhoneAsync(string phone);
+
+        Task<DotAuthUser?> FindByUsernameAsync(string username);
+
         Task SaveChangesAsync();
     }
 }
