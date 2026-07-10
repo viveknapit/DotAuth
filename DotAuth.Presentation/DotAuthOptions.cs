@@ -9,5 +9,11 @@ namespace DotAuth.Presentation
     {
         public string ConnectionString { get; set; } = string.Empty;
         public DatabaseProvider Provider { get; set; }
+
+        public void UsePostgreSql(string connectionString)
+        {
+            Provider = DatabaseProvider.PostgreSql;
+            ConnectionString = connectionString;
+        }
     }
 }
