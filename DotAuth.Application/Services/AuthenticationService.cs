@@ -11,12 +11,16 @@ namespace DotAuth.Application.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
 
+        #region Constructor
         public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
         }
+        #endregion
+
+        #region Register method
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
         {
             // Check if email already exists
@@ -74,7 +78,9 @@ namespace DotAuth.Application.Services
                 RefreshToken = refreshToken
             };
         }
+        #endregion
 
+        #region Login method
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             DotAuthUser? user = null;
@@ -114,6 +120,25 @@ namespace DotAuth.Application.Services
                 UserId = user.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
+            };
+        }
+        #endregion
+
+        public async Task<CurrentUserResponse> GetCurrentUserAsync(Guid userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            return new CurrentUserResponse
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
     }

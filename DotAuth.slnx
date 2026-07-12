@@ -1,4 +1,5 @@
 <Solution>
+  <Folder Name="/docs/" />
   <Folder Name="/src/">
     <Project Path="DotAuth.Application/DotAuth.Application.csproj" />
     <Project Path="DotAuth.Domain/DotAuth.Domain.csproj" />

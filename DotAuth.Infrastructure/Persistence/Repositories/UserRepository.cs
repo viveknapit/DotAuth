@@ -62,5 +62,11 @@ namespace DotAuth.Infrastructure.Persistence.Repositories
             return await _context.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
         }
+
+        public async Task<DotAuthUser?> GetByIdAsync(Guid id)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

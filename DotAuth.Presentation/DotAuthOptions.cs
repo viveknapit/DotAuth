@@ -1,5 +1,5 @@
 ﻿using DotAuth.Domain.Enums;
-using DotAuth.Presentation.Options;
+using DotAuth.Infrastructure.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;

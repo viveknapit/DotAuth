@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotAuth.Presentation.Options
+namespace DotAuth.Infrastructure.Options
 {
     public sealed class JwtOptions
     {

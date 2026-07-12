@@ -21,6 +21,8 @@ namespace DotAuth.Application.Interfaces
 
         Task<DotAuthUser?> FindByUsernameAsync(string username);
 
+        Task<DotAuthUser?> GetByIdAsync(Guid id);
+
         Task SaveChangesAsync();
     }
 }

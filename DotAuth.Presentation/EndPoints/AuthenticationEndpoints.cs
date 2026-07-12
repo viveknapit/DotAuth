@@ -3,9 +3,8 @@ using DotAuth.Application.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace DotAuth.Presentation.EndPoints
 {
@@ -32,6 +31,23 @@ namespace DotAuth.Presentation.EndPoints
                     return Results.Ok(response);
                 })
                 .WithName("Login")
+                .WithTags("Authentication");
+
+            app.MapGet("auth/me",
+                [Authorize] async (
+                    ClaimsPrincipal user,
+                    IAuthenticationService authenticationService) =>
+                {
+                    var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                    if (string.IsNullOrWhiteSpace(userIdClaim))
+                        return Results.Unauthorized();
+
+                    var response = await authenticationService.GetCurrentUserAsync(Guid.Parse(userIdClaim));
+
+                    return Results.Ok(response);
+                })
+                .WithName("CurrentUser")
                 .WithTags("Authentication");
 
             return app;
