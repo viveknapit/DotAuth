@@ -18,17 +18,26 @@ namespace DotAuth.Presentation.EndPoints
                     RegisterRequest request,
                     IAuthenticationService authenticationService) =>
                 {
-                    var response = await authenticationService.RegisterAsync(request);
+                    var result = await authenticationService.RegisterAsync(request);
+                    if(!result.IsSuccess)
+                    {
+                        return Results.BadRequest(result.ErrorMessage);
+                    }
 
-                    return Results.Ok(response);
+                    return Results.Ok(result.Value);
                 })
                 .WithName("Register")
                 .WithTags("Authentication");
             
             app.MapPost("/auth/login", async ( LoginRequest request, IAuthenticationService authenticationService) =>
                 {
-                    var response = await authenticationService.LoginAsync(request);
-                    return Results.Ok(response);
+                    var result = await authenticationService.LoginAsync(request);
+                    if(!result.IsSuccess)
+                    {
+                        return Results.BadRequest(result.ErrorMessage);
+                    }
+
+                    return Results.Ok(result.Value);
                 })
                 .WithName("Login")
                 .WithTags("Authentication");
@@ -43,9 +52,13 @@ namespace DotAuth.Presentation.EndPoints
                     if (string.IsNullOrWhiteSpace(userIdClaim))
                         return Results.Unauthorized();
 
-                    var response = await authenticationService.GetCurrentUserAsync(Guid.Parse(userIdClaim));
+                    var result = await authenticationService.GetCurrentUserAsync(Guid.Parse(userIdClaim));
+                    if (!result.IsSuccess)
+                    {
+                        return Results.BadRequest(result.ErrorMessage);
+                    }
 
-                    return Results.Ok(response);
+                    return Results.Ok(result.Value);
                 })
                 .WithName("CurrentUser")
                 .WithTags("Authentication");

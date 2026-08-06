@@ -1,4 +1,5 @@
-﻿using DotAuth.Application.Contracts.Requests;
+﻿using DotAuth.Application.Common.Results;
+using DotAuth.Application.Contracts.Requests;
 using DotAuth.Application.Contracts.Responses;
 using DotAuth.Application.Interfaces;
 using DotAuth.Domain.Entities;
@@ -21,7 +22,7 @@ namespace DotAuth.Application.Services
         #endregion
 
         #region Register method
-        public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
+        public async Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request)
         {
             // Check if email already exists
             if (!string.IsNullOrWhiteSpace(request.Email))
@@ -71,17 +72,17 @@ namespace DotAuth.Application.Services
             var refreshToken = _jwtProvider.GenerateRefreshToken();
 
             // Return response
-            return new RegisterResponse
+            return Result<RegisterResponse>.Success(new RegisterResponse
             {
                 UserId = user.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
-            };
+            });
         }
         #endregion
 
         #region Login method
-        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
         {
             DotAuthUser? user = null;
             if (!string.IsNullOrEmpty(request.Login))
@@ -102,12 +103,12 @@ namespace DotAuth.Application.Services
 
                 if (user == null)
                 {
-                    throw new Exception("Invalid credentials.");
+                    return Result<LoginResponse>.Failure("User does not exist.");
                 }
 
                 if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
                 {
-                    throw new Exception("Invalid credentials.");
+                    return Result<LoginResponse>.Failure("Invalid credentials.");
                 }
             }
 
@@ -115,23 +116,24 @@ namespace DotAuth.Application.Services
             var accessToken = _jwtProvider.GenerateAccessToken(user);
             var refreshToken = _jwtProvider.GenerateRefreshToken();
             // Return response
-            return new LoginResponse
+
+            return Result<LoginResponse>.Success(new LoginResponse
             {
                 UserId = user.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
-            };
+            });
         }
         #endregion
 
-        public async Task<CurrentUserResponse> GetCurrentUserAsync(Guid userId)
+        public async Task<Result<CurrentUserResponse>> GetCurrentUserAsync(Guid userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new Exception("User not found.");
             }
-            return new CurrentUserResponse
+            return Result<CurrentUserResponse>.Success(new CurrentUserResponse
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -139,7 +141,7 @@ namespace DotAuth.Application.Services
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
                 LastName = user.LastName
-            };
+            });
         }
     }
 }
