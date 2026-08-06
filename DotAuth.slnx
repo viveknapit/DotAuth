@@ -1,5 +1,8 @@
 <Solution>
-  <Folder Name="/docs/" />
+  <Folder Name="/docs/">
+    <File Path="architecture.md" />
+    <File Path="getting-started.md" />
+  </Folder>
   <Folder Name="/samples/">
     <Project Path="SampleAPI/SampleAPI.csproj" Id="5a943a1b-9e8f-4fbd-81bb-2008eaec481f" />
   </Folder>
