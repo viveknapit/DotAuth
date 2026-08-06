@@ -2,6 +2,7 @@
   <Folder Name="/docs/">
     <File Path="docs/architecture.md" />
     <File Path="docs/getting-started.md" />
+    <File Path="roadmap.md" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/SampleAPI/SampleAPI.csproj" Id="5a943a1b-9e8f-4fbd-81bb-2008eaec481f" />
