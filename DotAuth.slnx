@@ -1,15 +1,15 @@
 <Solution>
   <Folder Name="/docs/">
-    <File Path="architecture.md" />
-    <File Path="getting-started.md" />
+    <File Path="docs/architecture.md" />
+    <File Path="docs/getting-started.md" />
   </Folder>
   <Folder Name="/samples/">
-    <Project Path="SampleAPI/SampleAPI.csproj" Id="5a943a1b-9e8f-4fbd-81bb-2008eaec481f" />
+    <Project Path="samples/SampleAPI/SampleAPI.csproj" Id="5a943a1b-9e8f-4fbd-81bb-2008eaec481f" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="DotAuth.Application/DotAuth.Application.csproj" />
-    <Project Path="DotAuth.Domain/DotAuth.Domain.csproj" />
-    <Project Path="DotAuth.Infrastructure/DotAuth.Infrastructure.csproj" />
-    <Project Path="DotAuth.Presentation/DotAuth.Presentation.csproj" />
+    <Project Path="src/DotAuth.Application/DotAuth.Application.csproj" />
+    <Project Path="src/DotAuth.Domain/DotAuth.Domain.csproj" />
+    <Project Path="src/DotAuth.Infrastructure/DotAuth.Infrastructure.csproj" />
+    <Project Path="src/DotAuth.Presentation/DotAuth.Presentation.csproj" />
   </Folder>
 </Solution>
