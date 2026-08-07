@@ -3,6 +3,7 @@ using DotAuth.Application.Contracts.Requests;
 using DotAuth.Application.Contracts.Responses;
 using DotAuth.Application.Interfaces;
 using DotAuth.Domain.Entities;
+using DotAuth.Application.Common.Security;
 
 namespace DotAuth.Application.Services
 {
@@ -11,13 +12,15 @@ namespace DotAuth.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
         #region Constructor
-        public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+        public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider, IRefreshTokenRepository refreshTokenRepository)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
+            _refreshTokenRepository = refreshTokenRepository;
         }
         #endregion
 
@@ -115,8 +118,16 @@ namespace DotAuth.Application.Services
             // Generate tokens
             var accessToken = _jwtProvider.GenerateAccessToken(user);
             var refreshToken = _jwtProvider.GenerateRefreshToken();
-            // Return response
 
+            //store refresh token in the database
+            var hashedRefreshToken = TokenHashing.Hash(refreshToken);
+
+            var refreshTokenEntity = RefreshToken.Create(user.Id, hashedRefreshToken, 7);
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+            await _refreshTokenRepository.SaveChangesAsync();
+
+            // Return response
             return Result<LoginResponse>.Success(new LoginResponse
             {
                 UserId = user.Id,
@@ -126,6 +137,7 @@ namespace DotAuth.Application.Services
         }
         #endregion
 
+        #region Current User method
         public async Task<Result<CurrentUserResponse>> GetCurrentUserAsync(Guid userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
@@ -141,6 +153,38 @@ namespace DotAuth.Application.Services
                 PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
                 LastName = user.LastName
+            });
+        }
+        #endregion
+
+        public async Task<Result<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var hashedRefreshToken = TokenHashing.Hash(request.Token);
+            var refreshTokenEntity = await _refreshTokenRepository.GetByHashAsync(hashedRefreshToken);
+            if (refreshTokenEntity == null || refreshTokenEntity.IsExpired || refreshTokenEntity.IsRevoked)
+            {
+                return Result<RefreshTokenResponse>.Failure("Invalid or expired refresh token.");
+            }
+            var user = await _userRepository.GetByIdAsync(refreshTokenEntity.UserId);
+            if (user == null)
+            {
+                return Result<RefreshTokenResponse>.Failure("User not found.");
+            }
+            // Generate new tokens
+            var newAccessToken = _jwtProvider.GenerateAccessToken(user);
+            var newRefreshToken = _jwtProvider.GenerateRefreshToken();
+            // Revoke the old refresh token
+            refreshTokenEntity.Revoke();
+            await _refreshTokenRepository.SaveChangesAsync();
+            // Store the new refresh token in the database
+            var newHashedRefreshToken = TokenHashing.Hash(newRefreshToken);
+            var newRefreshTokenEntity = RefreshToken.Create(user.Id, newHashedRefreshToken, 7);
+            await _refreshTokenRepository.AddAsync(newRefreshTokenEntity);
+            await _refreshTokenRepository.SaveChangesAsync();
+            return Result<RefreshTokenResponse>.Success(new RefreshTokenResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             });
         }
     }

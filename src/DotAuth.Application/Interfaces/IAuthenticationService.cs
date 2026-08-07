@@ -14,5 +14,7 @@ namespace DotAuth.Application.Interfaces
         Task<Result<LoginResponse>> LoginAsync(LoginRequest request);
 
         Task<Result<CurrentUserResponse>> GetCurrentUserAsync(Guid UserId);
+
+        Task<Result<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }

@@ -63,6 +63,18 @@ namespace DotAuth.Presentation.EndPoints
                 .WithName("CurrentUser")
                 .WithTags("Authentication");
 
+            app.MapPost("/auth/refresh", async (RefreshTokenRequest request, IAuthenticationService authenticationService) =>
+                {
+                    var result = await authenticationService.RefreshTokenAsync(request);
+                    if (!result.IsSuccess)
+                    {
+                        return Results.BadRequest(result.ErrorMessage);
+                    }
+                    return Results.Ok(result.Value);
+                })
+                .WithName("RefreshToken")
+                .WithTags("Authentication");
+
             return app;
         }
 
