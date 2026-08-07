@@ -20,15 +20,10 @@ namespace DotAuth.Domain.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
         public DateTime LastLoginAt { get; private set; }
+        public ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
 
 
-        public static DotAuthUser Create(
-        string? userName,
-        string? email,
-        string? phoneNumber,
-        string passwordHash,
-        string? firstName,
-        string? lastName)
+        public static DotAuthUser Create(string? userName, string? email, string? phoneNumber, string passwordHash, string? firstName, string? lastName)
         {
             if (string.IsNullOrWhiteSpace(email) &&
                 string.IsNullOrWhiteSpace(phoneNumber))

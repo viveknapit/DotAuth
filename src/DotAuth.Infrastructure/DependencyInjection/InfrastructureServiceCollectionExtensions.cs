@@ -26,6 +26,7 @@ namespace DotAuth.Infrastructure.DependencyInjection
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             return services;
         }
