@@ -187,5 +187,16 @@ namespace DotAuth.Application.Services
                 RefreshToken = newRefreshToken
             });
         }
+
+        public async Task LogoutAsync(LogoutRequest request)
+        {
+            var hashedRefreshToken = TokenHashing.Hash(request.RefreshToken);
+            var refreshTokenEntity = await _refreshTokenRepository.GetByHashAsync(hashedRefreshToken);
+            if (refreshTokenEntity != null)
+            {
+                refreshTokenEntity.Revoke();
+                await _refreshTokenRepository.SaveChangesAsync();
+            }
+        }
     }
 }

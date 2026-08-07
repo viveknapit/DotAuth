@@ -75,6 +75,14 @@ namespace DotAuth.Presentation.EndPoints
                 .WithName("RefreshToken")
                 .WithTags("Authentication");
 
+            app.MapPost("/auth/logout", async (LogoutRequest logoutRequest, IAuthenticationService authenticationService) =>
+                {
+                    await authenticationService.LogoutAsync(logoutRequest);
+                    return Results.NoContent();
+                })
+                .WithName("Logout")
+                .WithTags("Authentication");
+
             return app;
         }
 
