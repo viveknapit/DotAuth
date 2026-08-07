@@ -157,6 +157,7 @@ namespace DotAuth.Application.Services
         }
         #endregion
 
+        #region Refresh Token method
         public async Task<Result<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request)
         {
             var hashedRefreshToken = TokenHashing.Hash(request.Token);
@@ -188,6 +189,9 @@ namespace DotAuth.Application.Services
             });
         }
 
+        #endregion
+
+        #region Logout method
         public async Task LogoutAsync(LogoutRequest request)
         {
             var hashedRefreshToken = TokenHashing.Hash(request.RefreshToken);
@@ -198,5 +202,6 @@ namespace DotAuth.Application.Services
                 await _refreshTokenRepository.SaveChangesAsync();
             }
         }
+        #endregion
     }
 }
