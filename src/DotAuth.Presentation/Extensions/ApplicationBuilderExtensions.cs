@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotAuth.Presentation.Extensions
+namespace DotAuth;
+
+public static class ApplicationBuilderExtensions
 {
-    public static class ApplicationBuilderExtensions
+    public static IApplicationBuilder UseDotAuthExceptionHandling(this IApplicationBuilder app)
     {
-        public static IApplicationBuilder UseDotAuthExceptionHandling(this IApplicationBuilder app)
-        {
-            return app.UseMiddleware<Middleware.ExceptionHandlingMiddleware>();
-        }
+        return app.UseMiddleware<Middleware.ExceptionHandlingMiddleware>();
     }
 }

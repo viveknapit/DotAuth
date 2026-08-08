@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotAuth.Presentation.Middleware
+namespace DotAuth.Middleware
 {
     public sealed class ExceptionHandlingMiddleware
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotAuth.Presentation
+namespace DotAuth
 {
     public sealed class DotAuthOptions
     {

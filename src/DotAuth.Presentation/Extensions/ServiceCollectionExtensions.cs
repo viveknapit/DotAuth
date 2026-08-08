@@ -6,51 +6,50 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace DotAuth.Presentation.Extensions
+namespace DotAuth;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddDotAuth(
+    this IServiceCollection services,
+    Action<DotAuthOptions> configure)
     {
-        public static IServiceCollection AddDotAuth(
-        this IServiceCollection services,
-        Action<DotAuthOptions> configure)
+        var dotAuthOptions = new DotAuthOptions();
+
+        configure(dotAuthOptions);
+
+        services.AddDotAuthInfrastructure(dotAuthOptions.ConnectionString);
+
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.Configure<JwtOptions>(jwt =>
         {
-            var dotAuthOptions = new DotAuthOptions();
+            jwt.SecretKey = dotAuthOptions.Jwt.SecretKey;
+            jwt.Issuer = dotAuthOptions.Jwt.Issuer;
+            jwt.Audience = dotAuthOptions.Jwt.Audience;
+            jwt.AccessTokenExpirationMinutes =
+                dotAuthOptions.Jwt.AccessTokenExpirationMinutes;
+        });
 
-            configure(dotAuthOptions);
-
-            services.AddDotAuthInfrastructure(dotAuthOptions.ConnectionString);
-
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.Configure<JwtOptions>(jwt =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtOptions =>
             {
-                jwt.SecretKey = dotAuthOptions.Jwt.SecretKey;
-                jwt.Issuer = dotAuthOptions.Jwt.Issuer;
-                jwt.Audience = dotAuthOptions.Jwt.Audience;
-                jwt.AccessTokenExpirationMinutes =
-                    dotAuthOptions.Jwt.AccessTokenExpirationMinutes;
+                JwtOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = dotAuthOptions.Jwt.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = dotAuthOptions.Jwt.Audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        System.Text.Encoding.UTF8.GetBytes(dotAuthOptions.Jwt.SecretKey)),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtOptions =>
-                {
-                    JwtOptions.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = dotAuthOptions.Jwt.Issuer,
-
-                        ValidateAudience = true,
-                        ValidAudience = dotAuthOptions.Jwt.Audience,
-
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            System.Text.Encoding.UTF8.GetBytes(dotAuthOptions.Jwt.SecretKey)),
-
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
-
-            return services;
-        }
+        return services;
     }
 }

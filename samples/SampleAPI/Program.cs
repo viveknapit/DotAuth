@@ -1,10 +1,7 @@
-using DotAuth.Presentation.EndPoints;
-using DotAuth.Presentation.Extensions;
+using DotAuth;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddDotAuth(options =>
 {
@@ -39,7 +36,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.MapOpenApi();
 }
 app.UseHttpsRedirection();
 

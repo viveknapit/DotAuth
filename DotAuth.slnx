@@ -11,6 +11,6 @@
     <Project Path="src/DotAuth.Application/DotAuth.Application.csproj" />
     <Project Path="src/DotAuth.Domain/DotAuth.Domain.csproj" />
     <Project Path="src/DotAuth.Infrastructure/DotAuth.Infrastructure.csproj" />
-    <Project Path="src/DotAuth.Presentation/DotAuth.Presentation.csproj" />
+    <Project Path="src/DotAuth.Presentation/DotAuth.csproj" />
   </Folder>
 </Solution>
