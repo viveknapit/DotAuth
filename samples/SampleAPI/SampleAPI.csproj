@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DotAuth.Presentation\DotAuth.csproj" />
+    <ProjectReference Include="..\..\src\DotAuth\DotAuth.csproj" />
   </ItemGroup>
 
 </Project>
